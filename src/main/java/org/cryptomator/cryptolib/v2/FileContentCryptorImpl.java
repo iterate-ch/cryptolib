@@ -23,6 +23,8 @@ import javax.crypto.ShortBufferException;
 import javax.crypto.spec.GCMParameterSpec;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 
 import static org.cryptomator.cryptolib.v2.Constants.CHUNK_SIZE;
@@ -114,8 +116,22 @@ class FileContentCryptorImpl implements FileContentCryptor {
 	// visible for testing
 	void encryptChunk(ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkNumber, byte[] headerNonce, DestroyableSecretKey fileKey, byte[] nonce) {
 		try (DestroyableSecretKey fk = fileKey.copy()) {
+
+			// dummy initialization to avoid subsequent use of same nonce due to checksum/write pattern
+			byte[] dummy = new byte[GCM_NONCE_SIZE];
+			random.nextBytes(dummy);
+
 			// payload:
-			try (ObjectPool.Lease<Cipher> cipher = CipherSupplier.AES_GCM.encryptionCipher(fk, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, nonce))) {
+			try (ObjectPool.Lease<Cipher> cipher = CipherSupplier.AES_GCM.encryptionCipher(fk, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, dummy))) {
+
+				try {
+					cipher.get().init(Cipher.ENCRYPT_MODE, fk, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, nonce));
+				} catch (InvalidKeyException e) {
+					throw new IllegalArgumentException("Invalid key.", e);
+				} catch (InvalidAlgorithmParameterException e) {
+					throw new IllegalArgumentException("Algorithm parameter not appropriate for " + cipher.get().getAlgorithm() + ".", e);
+				}
+
 				final byte[] chunkNumberBigEndian = longToBigEndianByteArray(chunkNumber);
 				cipher.get().updateAAD(chunkNumberBigEndian);
 				cipher.get().updateAAD(headerNonce);

@@ -23,9 +23,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.GCMParameterSpec;
 import java.nio.ByteBuffer;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
+import static org.cryptomator.cryptolib.v2.Constants.GCM_NONCE_SIZE;
 import static org.cryptomator.cryptolib.v2.Constants.GCM_TAG_SIZE;
 
 class FileHeaderCryptorImpl implements FileHeaderCryptor {
@@ -61,8 +64,21 @@ class FileHeaderCryptorImpl implements FileHeaderCryptor {
 			ByteBuffer result = ByteBuffer.allocate(FileHeaderImpl.SIZE);
 			result.put(headerImpl.getNonce());
 
+			// dummy initialization to avoid subsequent use of same nonce due to checksum/write pattern
+			byte[] dummy = new byte[GCM_NONCE_SIZE];
+			random.nextBytes(dummy);
+
 			// encrypt payload:
-			try (ObjectPool.Lease<Cipher> cipher = CipherSupplier.AES_GCM.encryptionCipher(ek, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, headerImpl.getNonce()))) {
+			try (ObjectPool.Lease<Cipher> cipher = CipherSupplier.AES_GCM.encryptionCipher(ek, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, dummy))) {
+
+				try {
+					cipher.get().init(Cipher.ENCRYPT_MODE, ek, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, headerImpl.getNonce()));
+				} catch (InvalidKeyException e) {
+					throw new IllegalArgumentException("Invalid key.", e);
+				} catch (InvalidAlgorithmParameterException e) {
+					throw new IllegalArgumentException("Algorithm parameter not appropriate for " + cipher.get().getAlgorithm() + ".", e);
+				}
+
 				int encrypted = cipher.get().doFinal(payloadCleartextBuf, result);
 				assert encrypted == FileHeaderImpl.PAYLOAD_LEN + FileHeaderImpl.TAG_LEN;
 			}
