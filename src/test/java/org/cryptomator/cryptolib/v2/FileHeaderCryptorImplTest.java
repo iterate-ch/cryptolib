@@ -19,6 +19,7 @@ import org.cryptomator.cryptolib.common.SecureRandomMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import javax.crypto.Cipher;
 import java.nio.ByteBuffer;
@@ -26,7 +27,7 @@ import java.security.SecureRandom;
 
 public class FileHeaderCryptorImplTest {
 
-	private static final SecureRandom RANDOM_MOCK = SecureRandomMock.NULL_RANDOM;
+	private static final SecureRandom RANDOM_MOCK = Mockito.spy(SecureRandomMock.cycle((byte) 0xF0, (byte) 0x0F, (byte) 0xAA));
 
 	private FileHeaderCryptorImpl headerCryptor;
 
