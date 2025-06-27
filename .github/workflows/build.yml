@@ -28,7 +28,7 @@ jobs:
       - name: Build and Test
         id: buildAndTest
         run: >
-          mvn -B verify
+          mvn -B verify -Pcoverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
