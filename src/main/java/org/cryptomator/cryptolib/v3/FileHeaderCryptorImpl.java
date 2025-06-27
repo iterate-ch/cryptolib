@@ -16,7 +16,6 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Base64;
 
 import static org.cryptomator.cryptolib.v3.Constants.GCM_TAG_SIZE;
 

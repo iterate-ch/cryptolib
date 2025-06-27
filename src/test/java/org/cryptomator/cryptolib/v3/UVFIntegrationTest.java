@@ -16,7 +16,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
@@ -39,14 +38,14 @@ public class UVFIntegrationTest {
 				"    \"fileFormat\": \"AES-256-GCM-32k\",\n" +
 				"    \"nameFormat\": \"AES-SIV-512-B64URL\",\n" +
 				"    \"seeds\": {\n" +
-				"        \"HDm38g\": \"ypeBEsobvcr6wjGzmiPcTaeG7/gUfE5yuYB3ha/uSLs=\",\n" +
-				"        \"gBryKw\": \"PiPoFgA5WUoziU9lZOGxNIu9egCI1CxKy3PurtWcAJ0=\",\n" +
-				"        \"QBsJFg\": \"Ln0sA6lQeuJl7PW1NWiFpTOTogKdJBOUmXJloaJa78Y=\"\n" +
+				"        \"HDm38g\": \"ypeBEsobvcr6wjGzmiPcTaeG7_gUfE5yuYB3ha_uSLs\",\n" +
+				"        \"gBryKw\": \"PiPoFgA5WUoziU9lZOGxNIu9egCI1CxKy3PurtWcAJ0\",\n" +
+				"        \"QBsJFg\": \"Ln0sA6lQeuJl7PW1NWiFpTOTogKdJBOUmXJloaJa78Y\"\n" +
 				"    },\n" +
 				"    \"initialSeed\": \"HDm38i\",\n" +
 				"    \"latestSeed\": \"QBsJFo\",\n" +
 				"    \"kdf\": \"HKDF-SHA512\",\n" +
-				"    \"kdfSalt\": \"NIlr89R7FhochyP4yuXZmDqCnQ0dBB3UZ2D+6oiIjr8=\",\n" +
+				"    \"kdfSalt\": \"NIlr89R7FhochyP4yuXZmDqCnQ0dBB3UZ2D-6oiIjr8\",\n" +
 				"    \"org.example.customfield\": 42\n" +
 				"}";
 		masterkey = UVFMasterkey.fromDecryptedPayload(json);
@@ -151,11 +150,11 @@ public class UVFIntegrationTest {
 	}
 
 	private static byte[] encryptFile(ByteBuffer cleartext, Cryptor cryptor) throws IOException {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 EncryptingWritableByteChannel ch = new EncryptingWritableByteChannel(Channels.newChannel(baos), cryptor)) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (EncryptingWritableByteChannel ch = new EncryptingWritableByteChannel(Channels.newChannel(baos), cryptor)) {
 			ch.write(cleartext);
-			return baos.toByteArray();
 		}
+		return baos.toByteArray();
 	}
 
 	private static byte[] decryptFile(ByteBuffer ciphertext, Cryptor cryptor) throws IOException {

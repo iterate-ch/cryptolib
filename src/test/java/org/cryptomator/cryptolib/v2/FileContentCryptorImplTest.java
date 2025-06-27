@@ -9,8 +9,18 @@
 package org.cryptomator.cryptolib.v2;
 
 import com.google.common.io.BaseEncoding;
-import org.cryptomator.cryptolib.api.*;
-import org.cryptomator.cryptolib.common.*;
+import org.cryptomator.cryptolib.api.AuthenticationFailedException;
+import org.cryptomator.cryptolib.api.Cryptor;
+import org.cryptomator.cryptolib.api.FileHeader;
+import org.cryptomator.cryptolib.api.PerpetualMasterkey;
+import org.cryptomator.cryptolib.common.CipherSupplier;
+import org.cryptomator.cryptolib.common.DecryptingReadableByteChannel;
+import org.cryptomator.cryptolib.common.DestroyableSecretKey;
+import org.cryptomator.cryptolib.common.EncryptingWritableByteChannel;
+import org.cryptomator.cryptolib.common.GcmTestHelper;
+import org.cryptomator.cryptolib.common.ObjectPool;
+import org.cryptomator.cryptolib.common.SecureRandomMock;
+import org.cryptomator.cryptolib.common.SeekableByteChannelMock;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
