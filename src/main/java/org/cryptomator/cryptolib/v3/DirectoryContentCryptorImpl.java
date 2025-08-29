@@ -36,8 +36,13 @@ class DirectoryContentCryptorImpl implements DirectoryContentCryptor {
 	public DirectoryMetadataImpl newDirectoryMetadata() {
 		byte[] dirId = new byte[32];
 		random.nextBytes(dirId);
-		return new DirectoryMetadataImpl(masterkey.currentRevision(), dirId);
+		return this.newDirectoryMetadata(dirId);
 	}
+
+    @Override
+    public DirectoryMetadataImpl newDirectoryMetadata(byte[] dirId) {
+        return new DirectoryMetadataImpl(masterkey.currentRevision(), dirId);
+    }
 
 	@Override
 	public DirectoryMetadataImpl decryptDirectoryMetadata(byte[] ciphertext) throws AuthenticationFailedException {

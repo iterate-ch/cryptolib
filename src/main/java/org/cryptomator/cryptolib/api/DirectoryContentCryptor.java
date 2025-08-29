@@ -6,6 +6,8 @@ public interface DirectoryContentCryptor {
 
 	DirectoryMetadata newDirectoryMetadata();
 
+	DirectoryMetadata newDirectoryMetadata(byte[] dirId);
+
 	/**
 	 * Decrypts the given directory metadata.
 	 *

@@ -27,10 +27,15 @@ class DirectoryContentCryptorImpl implements DirectoryContentCryptor {
 	@Override
 	public DirectoryMetadataImpl newDirectoryMetadata() {
 		byte[] dirId = UUID.randomUUID().toString().getBytes(StandardCharsets.US_ASCII);
-		return new DirectoryMetadataImpl(dirId);
+		return this.newDirectoryMetadata(dirId);
 	}
 
-	@Override
+    @Override
+    public DirectoryMetadataImpl newDirectoryMetadata(byte[] dirId) {
+        return new DirectoryMetadataImpl(dirId);
+    }
+
+    @Override
 	public DirectoryMetadataImpl decryptDirectoryMetadata(byte[] ciphertext) {
 		// dirId is stored in plaintext
 		return new DirectoryMetadataImpl(ciphertext);
