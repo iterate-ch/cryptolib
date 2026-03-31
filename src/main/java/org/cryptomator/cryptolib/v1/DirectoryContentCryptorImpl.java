@@ -35,7 +35,7 @@ class DirectoryContentCryptorImpl implements DirectoryContentCryptor {
         return new DirectoryMetadataImpl(dirId);
     }
 
-    @Override
+	@Override
 	public DirectoryMetadataImpl decryptDirectoryMetadata(byte[] ciphertext) {
 		// dirId is stored in plaintext
 		return new DirectoryMetadataImpl(ciphertext);
