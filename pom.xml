@@ -2,14 +2,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.iterate.cryptomator</groupId>
 	<artifactId>cryptolib</artifactId>
-	<version>2.3.0.uvfdraft1-SNAPSHOT</version>
+	<version>2.3.0.uvfdraft1</version>
 	<name>Cryptomator Crypto Library</name>
 	<description>This library contains all cryptographic functions that are used by Cryptomator.</description>
 	<url>https://github.com/cryptomator/cryptolib</url>
 
 	<scm>
 		<connection>scm:git:git@github.com:iterate-ch/cryptolib.git</connection>
-		<tag>HEAD</tag>
+		<tag>2.3.0.uvfdraft1</tag>
 	</scm>
 
 	<distributionManagement>
