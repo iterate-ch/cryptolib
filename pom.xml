@@ -8,9 +8,7 @@
 	<url>https://github.com/cryptomator/cryptolib</url>
 
 	<scm>
-		<connection>scm:git:https://github.com/iterate-ch/cryptolib.git</connection>
-		<developerConnection>scm:git:https://github.com/iterate-ch/cryptolib.git</developerConnection>
-		<url>https://github.com/iterate-ch/cryptolib.git</url>
+		<connection>scm:git:git@github.com:iterate-ch/cryptolib.git</connection>
 		<tag>HEAD</tag>
 	</scm>
 
