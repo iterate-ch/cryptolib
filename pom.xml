@@ -2,15 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.iterate.cryptomator</groupId>
 	<artifactId>cryptolib</artifactId>
-	<version>2.3.0-SNAPSHOT</version>
+	<version>2.3.0.uvfdraft2-SNAPSHOT</version>
 	<name>Cryptomator Crypto Library</name>
 	<description>This library contains all cryptographic functions that are used by Cryptomator.</description>
 	<url>https://github.com/cryptomator/cryptolib</url>
 
 	<scm>
-		<connection>scm:git:https://github.com/iterate-ch/cryptolib.git</connection>
-		<developerConnection>scm:git:https://github.com/iterate-ch/cryptolib.git</developerConnection>
-		<url>https://github.com/iterate-ch/cryptolib.git</url>
+		<connection>scm:git:git@github.com:iterate-ch/cryptolib.git</connection>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -28,25 +26,44 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>8</maven.compiler.release>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
+		<project.build.outputTimestamp>2026-01-29T16:35:49Z</project.build.outputTimestamp>
 
 		<!-- dependencies -->
-		<gson.version>2.11.0</gson.version>
-		<guava.version>33.2.1-jre</guava.version>
-		<siv-mode.version>1.5.2</siv-mode.version>
-		<bouncycastle.version>1.78.1</bouncycastle.version>
-		<slf4j.version>2.0.13</slf4j.version>
+		<gson.version>2.13.2</gson.version>
+		<guava.version>33.5.0-jre</guava.version>
+		<siv-mode.version>1.6.1</siv-mode.version>
+		<bouncycastle.version>1.83</bouncycastle.version>
+		<slf4j.version>2.0.17</slf4j.version>
 
 		<!-- test dependencies -->
-		<junit.jupiter.version>5.10.2</junit.jupiter.version>
-		<mockito.version>5.11.0</mockito.version>
-		<hamcrest.version>2.2</hamcrest.version>
+		<junit.jupiter.version>6.0.3</junit.jupiter.version>
+		<mockito.version>5.22.0</mockito.version>
+		<hamcrest.version>3.0</hamcrest.version>
 		<jmh.version>1.37</jmh.version>
 
 		<!-- build plugin dependencies -->
-		<dependency-check.version>10.0.2</dependency-check.version>
-		<jacoco.version>0.8.12</jacoco.version>
-		<nexus-staging.version>1.7.0</nexus-staging.version>
+		<central-publishing.version>0.10.0</central-publishing.version>
+		<dependency-check.version>12.2.0</dependency-check.version>
+		<exec-maven.version>3.6.3</exec-maven.version>
+		<jacoco.version>0.8.14</jacoco.version>
+		<mvn-compiler.version>3.15.0</mvn-compiler.version>
+		<mvn-clean.version>3.5.0</mvn-clean.version>
+		<mvn-dependency.version>3.10.0</mvn-dependency.version>
+		<mvn-deploy.version>3.1.4</mvn-deploy.version>
+		<mvn-enforcer.version>3.6.2</mvn-enforcer.version>
+		<mvn-install.version>3.1.4</mvn-install.version>
+		<mvn-javadoc.version>3.12.0</mvn-javadoc.version>
+		<mvn-jar.version>3.5.0</mvn-jar.version>
+		<mvn-gpg.version>3.2.8</mvn-gpg.version>
+		<mvn-resources.version>3.4.0</mvn-resources.version>
+		<mvn-shade.version>3.6.1</mvn-shade.version>
+		<mvn-source.version>3.4.0</mvn-source.version>
+		<mvn-surefire.version>3.5.5</mvn-surefire.version>
+
+		<!-- Property used by surefire to determine jacoco engine -->
+		<surefire.jacoco.args />
 	</properties>
 
 	<licenses>
@@ -56,6 +73,20 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<repositories>
+		<repository>
+			<name>Central Portal Snapshots</name>
+			<id>central-portal-snapshots</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<developers>
 		<developer>
@@ -158,8 +189,20 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${mvn-dependency.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>properties</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>${mvn-enforcer.version}</version>
 				<executions>
 					<execution>
 						<id>enforce-java</id>
@@ -170,7 +213,7 @@
 							<rules>
 								<requireJavaVersion>
 									<message>You need at least JDK 22 to build this project.</message>
-									<version>[21,)</version>
+									<version>[22,)</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -179,10 +222,11 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.13.0</version>
+				<version>${mvn-compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<release>${maven.compiler.target}</release>
 					<encoding>UTF-8</encoding>
 					<showWarnings>true</showWarnings>
 				</configuration>
@@ -219,7 +263,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>${mvn-shade.version}</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -257,7 +301,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>${exec-maven.version}</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -270,6 +314,7 @@
 							<arguments>
 								<argument>--verbose</argument>
 								<argument>--update</argument>
+								<argument>--date=${project.build.outputTimestamp}</argument>
 								<argument>--file=${project.build.directory}/${project.build.finalName}.jar</argument>
 								<argument>META-INF/versions/9/module-info.class</argument>
 								<argument>META-INF/versions/22/module-info.class</argument>
@@ -281,12 +326,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
+				<version>${mvn-surefire.version}</version>
+				<configuration>
+					<argLine>@{surefire.jacoco.args} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.4.1</version>
+				<version>${mvn-jar.version}</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
@@ -298,7 +346,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>${mvn-source.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -310,7 +358,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${mvn-javadoc.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -349,6 +397,28 @@
 					</tags>
 				</configuration>
 			</plugin>
+
+			<!-- for reproducible builds, fix version for plugins bound in built-in jar lifecycle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>${mvn-clean.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${mvn-install.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${mvn-deploy.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${mvn-resources.version}</version>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -367,7 +437,7 @@
 							<skipTestScope>true</skipTestScope>
 							<detail>true</detail>
 							<suppressionFile>suppression.xml</suppressionFile>
-							<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+							<nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
 						</configuration>
 						<executions>
 							<execution>
@@ -396,6 +466,9 @@
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
+								<configuration>
+									<propertyName>surefire.jacoco.args</propertyName>
+								</configuration>
 							</execution>
 							<execution>
 								<id>report</id>
@@ -410,12 +483,12 @@
 		</profile>
 
 		<profile>
-			<id>release</id>
+			<id>sign</id>
 			<build>
 				<plugins>
 					<plugin>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.2.4</version>
+						<version>${mvn-gpg.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -424,10 +497,7 @@
 									<goal>sign</goal>
 								</goals>
 								<configuration>
-									<gpgArguments>
-										<arg>--pinentry-mode</arg>
-										<arg>loopback</arg>
-									</gpgArguments>
+									<signer>bc</signer>
 								</configuration>
 							</execution>
 						</executions>
@@ -438,26 +508,17 @@
 
 		<profile>
 			<id>deploy-central</id>
-			<distributionManagement>
-				<repository>
-					<id>ossrh</id>
-					<name>Maven Central</name>
-					<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-			</distributionManagement>
 			<build>
 				<plugins>
 					<plugin>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.1.1</version>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
+						<groupId>org.sonatype.central</groupId>
+ 						<artifactId>central-publishing-maven-plugin</artifactId>
+ 						<version>${central-publishing.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+  							<autoPublish>true</autoPublish>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>

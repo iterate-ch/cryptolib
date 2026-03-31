@@ -1,11 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2016 Sebastian Stenzel and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the accompanying LICENSE.txt.
- *
- * Contributors:
- *     Sebastian Stenzel - initial API and implementation
- *******************************************************************************/
 package org.cryptomator.cryptolib.v2;
 
 import org.cryptomator.cryptolib.api.AuthenticationFailedException;
@@ -77,7 +69,7 @@ class FileContentCryptorImpl implements FileContentCryptor {
 
 	@Override
 	public void encryptChunk(ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkNumber, FileHeader header, byte[] nonce) {
-		if (cleartextChunk.remaining() <= 0 || cleartextChunk.remaining() > PAYLOAD_SIZE) {
+		if (cleartextChunk.remaining() < 0 || cleartextChunk.remaining() > PAYLOAD_SIZE) {
 			throw new IllegalArgumentException("Invalid cleartext chunk size: " + cleartextChunk.remaining() + ", expected range [1, " + PAYLOAD_SIZE + "]");
 		}
 		if (ciphertextChunk.remaining() < CHUNK_SIZE) {
@@ -141,7 +133,6 @@ class FileContentCryptorImpl implements FileContentCryptor {
 
 			// payload:
 			final ByteBuffer payloadBuf = ciphertextChunk.duplicate();
-			payloadBuf.position(GCM_NONCE_SIZE);
 			assert payloadBuf.remaining() >= GCM_TAG_SIZE;
 
 			// payload:
