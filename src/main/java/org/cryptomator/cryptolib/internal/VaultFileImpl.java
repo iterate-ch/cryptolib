@@ -272,6 +272,12 @@ public final class VaultFileImpl implements VaultFile {
 	}
 
 	@Override
+	public void encryptChunk(ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex, byte[] chunkNonce) {
+		assertNotDestroyed();
+		codec.encryptChunk(headerNonce, fileKey, cleartextChunk, ciphertextChunk, chunkIndex, chunkNonce);
+	}
+
+	@Override
 	public void decryptChunk(ByteBuffer ciphertextChunk, ByteBuffer cleartextChunk, long chunkIndex) throws AuthenticationFailedException {
 		assertNotDestroyed();
 		codec.decryptChunk(headerNonce, fileKey, ciphertextChunk, cleartextChunk, chunkIndex);

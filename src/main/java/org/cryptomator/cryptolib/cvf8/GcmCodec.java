@@ -137,6 +137,16 @@ final class GcmCodec implements Cvf8ContentCodec {
 
 	@Override
 	public void encryptChunk(byte[] headerNonce, DestroyableSecretKey fileKey, ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex) {
+		byte[] nonce = new byte[GCM_NONCE_SIZE];
+		random.nextBytes(nonce);
+		encryptChunk(headerNonce, fileKey, cleartextChunk, ciphertextChunk, chunkIndex, nonce);
+	}
+
+	@Override
+	public void encryptChunk(byte[] headerNonce, DestroyableSecretKey fileKey, ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex, byte[] nonce) {
+		if (nonce.length != GCM_NONCE_SIZE) {
+			throw new IllegalArgumentException("Invalid nonce length: " + nonce.length + ", expected " + GCM_NONCE_SIZE + " bytes.");
+		}
 		if (cleartextChunk.remaining() > PAYLOAD_SIZE) {
 			throw new IllegalArgumentException("Invalid cleartext chunk size: " + cleartextChunk.remaining() + ", expected range [0, " + PAYLOAD_SIZE + "]");
 		}
@@ -144,8 +154,6 @@ final class GcmCodec implements Cvf8ContentCodec {
 			throw new IllegalArgumentException("Invalid ciphertext chunk size: " + ciphertextChunk.remaining() + ", must fit " + (cleartextChunk.remaining() + GCM_NONCE_SIZE + GCM_TAG_SIZE) + " bytes.");
 		}
 		try (DestroyableSecretKey fk = fileKey.copy()) {
-			byte[] nonce = new byte[GCM_NONCE_SIZE];
-			random.nextBytes(nonce);
 			Cipher cipher = CipherSupplier.AES_GCM.encryptionCipher(fk, new GCMParameterSpec(GCM_TAG_SIZE * Byte.SIZE, nonce));
 			cipher.updateAAD(longToBigEndianByteArray(chunkIndex));
 			cipher.updateAAD(headerNonce);
