@@ -161,6 +161,16 @@ final class CtrMacCodec implements Cvf8ContentCodec {
 
 	@Override
 	public void encryptChunk(byte[] headerNonce, DestroyableSecretKey fileKey, ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex) {
+		byte[] nonce = new byte[CTRMAC_NONCE_SIZE];
+		random.nextBytes(nonce);
+		encryptChunk(headerNonce, fileKey, cleartextChunk, ciphertextChunk, chunkIndex, nonce);
+	}
+
+	@Override
+	public void encryptChunk(byte[] headerNonce, DestroyableSecretKey fileKey, ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex, byte[] nonce) {
+		if (nonce.length != CTRMAC_NONCE_SIZE) {
+			throw new IllegalArgumentException("Invalid nonce length: " + nonce.length + ", expected " + CTRMAC_NONCE_SIZE + " bytes.");
+		}
 		if (cleartextChunk.remaining() > PAYLOAD_SIZE) {
 			throw new IllegalArgumentException("Invalid cleartext chunk size: " + cleartextChunk.remaining() + ", expected range [0, " + PAYLOAD_SIZE + "]");
 		}
@@ -169,8 +179,6 @@ final class CtrMacCodec implements Cvf8ContentCodec {
 		}
 		try (DestroyableSecretKey fk = fileKey.copy()) {
 			// nonce:
-			byte[] nonce = new byte[CTRMAC_NONCE_SIZE];
-			random.nextBytes(nonce);
 			int start = ciphertextChunk.position();
 			ciphertextChunk.put(nonce);
 
