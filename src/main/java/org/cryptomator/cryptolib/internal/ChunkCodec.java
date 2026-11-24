@@ -20,6 +20,19 @@ public interface ChunkCodec {
 	void encryptChunk(byte[] headerNonce, DestroyableSecretKey fileKey, ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex);
 
 	/**
+	 * Like {@link #encryptChunk(byte[], DestroyableSecretKey, ByteBuffer, ByteBuffer, long)}, but with a caller-provided chunk nonce instead of a random one.
+	 *
+	 * @param headerNonce The file header's nonce
+	 * @param fileKey The file's content key
+	 * @param cleartextChunk Cleartext from position to limit, at most one chunk
+	 * @param ciphertextChunk Receives the ciphertext; must have at least {@code cleartextChunk.remaining() + overhead} remaining bytes
+	 * @param chunkIndex Index of the chunk
+	 * @param chunkNonce The nonce for this chunk, of the length required by the format
+	 * @throws IllegalArgumentException If the nonce does not have the required length
+	 */
+	void encryptChunk(byte[] headerNonce, DestroyableSecretKey fileKey, ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex, byte[] chunkNonce);
+
+	/**
 	 * @param headerNonce The file header's nonce
 	 * @param fileKey The file's content key
 	 * @param ciphertextChunk Ciphertext from position to limit

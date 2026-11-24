@@ -124,6 +124,20 @@ public interface VaultFile extends Destroyable, AutoCloseable {
 	void encryptChunk(ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex);
 
 	/**
+	 * Encrypts one chunk using the given chunk nonce instead of a random one.
+	 * <p>
+	 * This allows producing identical ciphertext for the same cleartext more than once, e.g. to compute a checksum of the ciphertext before uploading it.
+	 * The caller is responsible for never using a nonce for two different cleartexts of the same file, i.e. under the same file header.
+	 *
+	 * @param cleartextChunk Cleartext from the buffer's position to its limit; at most {@link UnlockedVault#cleartextChunkSize()} bytes, may be empty
+	 * @param ciphertextChunk Receives the ciphertext; needs at least {@link UnlockedVault#ciphertextChunkSize()} remaining bytes
+	 * @param chunkIndex Index of the chunk
+	 * @param chunkNonce Nonce for this chunk; 12 bytes for AES-GCM (Cryptomator Vault Format 8 with {@code SIV_GCM}, Universal Vault Format), 16 bytes for AES-CTR (Cryptomator Vault Format 8 with {@code SIV_CTRMAC})
+	 * @throws IllegalArgumentException If the nonce does not have the length required by the format
+	 */
+	void encryptChunk(ByteBuffer cleartextChunk, ByteBuffer ciphertextChunk, long chunkIndex, byte[] chunkNonce);
+
+	/**
 	 * Authenticates and decrypts one chunk.
 	 *
 	 * @param ciphertextChunk Ciphertext from the buffer's position to its limit
