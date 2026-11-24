@@ -2,16 +2,29 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.iterate.cryptomator</groupId>
 	<artifactId>cryptolib</artifactId>
-	<version>3.0.0.iterate-SNAPSHOT</version>
+	<version>3.0.0.uvfdraft1-SNAPSHOT</version>
 	<name>Cryptomator Crypto Library</name>
 	<description>This library contains all cryptographic functions that are used by Cryptomator.</description>
 	<url>https://github.com/cryptomator/cryptolib</url>
 
 	<scm>
-		<connection>scm:git:git@github.com:cryptomator/cryptolib.git</connection>
-		<developerConnection>scm:git:git@github.com:cryptomator/cryptolib.git</developerConnection>
-		<url>https://github.com/cryptomator/cryptolib</url>
+		<connection>scm:git:git@github.com:iterate-ch/cryptolib.git</connection>
+		<developerConnection>scm:git:git@github.com:iterate-ch/cryptolib.git</developerConnection>
+		<url>https://github.com/iterate-ch/cryptolib</url>
+		<tag>HEAD</tag>
 	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>maven.cyberduck.io-release</id>
+			<url>s3://repo.maven.cyberduck.io/releases/</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<id>maven.cyberduck.io-snapshot</id>
+			<url>s3://repo.maven.cyberduck.io/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -149,6 +162,22 @@
 	</dependencies>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.springframework.build</groupId>
+				<artifactId>aws-maven</artifactId>
+				<version>5.0.0.RELEASE</version>
+			</extension>
+		</extensions>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.1.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
